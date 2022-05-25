@@ -94,6 +94,14 @@ requestDB.onupgradeneeded=()=>{
 
       </div>
 
+      {/* SHOW DATA DIV */}
+
+      <div>
+          <img src='' alt='img' width="100" height="50" />
+
+         
+      </div>
+
     </div>
   )
 }
