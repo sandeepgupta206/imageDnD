@@ -7,6 +7,7 @@ function TestOne() {
 
     const [file, setfile] = useState();
 
+    let addData;
     (function init(){
 let db = null;
 let objectStore = null;
@@ -15,13 +16,14 @@ let store;
 
 requestDB.onupgradeneeded=()=>{
     let db = requestDB.result;
-  let store =  db.createObjectStore('imageDB', {
+   store =  db.createObjectStore('imageDB', {
       autoIncrement:true});
-
-
   }
 
 
+  const addData=()=>{
+    store.put({imageName:text, img:file})
+  }
 
 
 
@@ -31,9 +33,6 @@ requestDB.onupgradeneeded=()=>{
 
     })();
 
-const addData=()=>{
-
-}
 
   return (
     <div>
@@ -61,4 +60,18 @@ const addData=()=>{
           </input>
         </span>
         <br />
-     
+        <br />
+        <button
+        onClick={addData}
+        >
+          add data
+        </button>
+        </form>
+
+      </div>
+
+    </div>
+  )
+}
+
+export default TestOne;
