@@ -8,11 +8,12 @@ function TestOne() {
     const [file, setfile] = useState();
 
     let addData;
+    let db = null;
+    let objectStore = null;
+    let store;
+    let requestDB;
     (function init(){
-let db = null;
-let objectStore = null;
-const requestDB = window.indexedDB.open('imgDB');
-let store;
+         requestDB = window.indexedDB.open('imgDB');
 
 requestDB.onupgradeneeded=()=>{
     let db = requestDB.result;
@@ -21,43 +22,41 @@ requestDB.onupgradeneeded=()=>{
   }
 
 
-   addData=(e)=>{
-      e.preventDefault();
-    // store.put({imageName:text, img:file})
-let formData = {
-    text,
-    file
-}
 
-let tx = db.transaction('imageDB', 'readwrite')
-
-tx.oncomplete = (value)=>{
-    console.log(value);
-}
-
-tx.onerror = (err)=>{
-    console.log(err)
-}
-
-// 
-
-store  =tx.objectStore('imageDB');
-let request = store.add(formData);
-
-request.onsuccss=ele=>{
-    console.log('successfully added');
-}
-
-request.onerror=ele=>{
-    console.log('got error');
-}
-
-
-  }
 
 
     })();
-
+    addData=(e)=>{
+        e.preventDefault();
+      // store.put({imageName:text, img:file})
+  let formData = {
+      text,
+      file
+  }
+  
+  let transaction = db.transaction('imageDB', 'readwrite')
+  
+  transaction.oncomplete = (value)=>{
+      console.log(value);
+  }
+  
+  transaction.onerror = (err)=>{
+      console.log(err)
+  }
+ 
+  store  =transaction.objectStore('imageDB');
+  let request = store.add(formData);
+  
+  request.onsuccss=ele=>{
+      console.log('successfully added');
+  }
+  
+  request.onerror=ele=>{
+      console.log('got error');
+  }
+  
+  
+    }
 
   return (
     <div>
