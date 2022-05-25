@@ -11,7 +11,7 @@ function TestOne() {
   var objectStore = null;
   var store;
   var requestDB;
-
+  var transaction;
   console.log(text);
   console.log(file);
 
@@ -23,7 +23,10 @@ function TestOne() {
        console.log(db) ;
       store = db.createObjectStore("imageDB", {
         autoIncrement: true,
+     
       });
+      console.log(db)
+     
     };
   })();
 
@@ -36,10 +39,9 @@ function TestOne() {
       title:text,
      image: file,
     };
-
-    alert(transaction);
-    var transaction = db.transaction("imageDB", "readwrite");
-
+    transaction=requestDB.result.transaction("imageDB", "readwrite");
+    console.log(db)
+    
     transaction.oncomplete = (value) => {
       console.log(value);
     };
@@ -49,7 +51,7 @@ function TestOne() {
     };
 
     store = transaction.objectStore("imageDB");
-    let request = store.add(formData);
+    let request = store.put(formData);
 
     request.onsuccss = (ele) => {
       console.log("successfully added");

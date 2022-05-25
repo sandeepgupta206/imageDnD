@@ -22,9 +22,9 @@ const [file, setfile] = useState()
  const addData =(e)=>{
    e.preventDefault();
 
-  const dbname = 'imgDB';
 
-  const requestDB = window.indexedDB.open(dbname);
+
+  const requestDB = window.indexedDB.open('imgDB');
 
   requestDB.onupgradeneeded=()=>{
     let db = requestDB.result;
@@ -34,7 +34,7 @@ const [file, setfile] = useState()
 
     // put method
 
-    store.put({imageName:text, img:file})
+    store.add({imageName:text, img:file})
   }
 
   settext('');

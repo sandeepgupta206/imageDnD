@@ -5,13 +5,17 @@ import App from './App';
 import TestOne from './TestOne';
 import reportWebVitals from './reportWebVitals';
 import TestTwo from './TestTwo';
+import TestThree from './TestThree';
+import TestFour from './TestFour';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-  <TestOne />
-    {/* <App /> */}
+  {/* <TestOne /> */}
     {/* <TestTwo /> */}
+    {/* <TestThree /> */}
+    <TestFour />
+    {/* <App /> */}
   </React.StrictMode>
 );
 

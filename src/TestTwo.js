@@ -6,32 +6,26 @@ function TestTwo() {
 
   const [file, setfile] = useState();
 
-  let db;
+  var db;
+  var store;
+  let requestDB;
 //   let store;
 
   useEffect(() => {
-      let db;
-      let objectStore;
+    const requestDB = window.indexedDB.open('imgDB');
+    // db = requestDB.result;
+    //  store = db.createObjectStore('imgStore',{autoIncrement:true});
 
-    // open db
-
-    let requestDB = window.indexedDB.open("imgDB",1);
-    
-    requestDB.onsuccess=(event)=>{
-        db = event.target.result;
-        console.log(db);
-
-        objectStore = db.createObjectStore('imageStore',{
-            autoIncrement: true,
-          })
-      
+    requestDB.onupgradeneeded =()=>{
+        db = requestDB.result;
+        store = db.createObjectStore('imgStore', {autoIncrement:true})
     }
+    addData();
 
-  
   });
 
   const addData=()=>{
-
+    store.add({imageName:text, img:file})
   }
 
   return (
