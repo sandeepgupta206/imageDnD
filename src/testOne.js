@@ -21,14 +21,37 @@ requestDB.onupgradeneeded=()=>{
   }
 
 
-  const addData=()=>{
-    store.put({imageName:text, img:file})
+   addData=(e)=>{
+      e.preventDefault();
+    // store.put({imageName:text, img:file})
+let formData = {
+    text,
+    file
+}
+
+let tx = db.transaction('imageDB', 'readwrite')
+
+tx.oncomplete = (value)=>{
+    console.log(value);
+}
+
+tx.onerror = (err)=>{
+    console.log(err)
+}
+
+store  =tx.objectStore('imageDB');
+let request = store.add(formData);
+
+request.onsuccss=ele=>{
+    console.log('successfully added');
+}
+
+request.onerror=ele=>{
+    console.log('got error');
+}
+
+
   }
-
-
-
-
-
 
 
     })();
