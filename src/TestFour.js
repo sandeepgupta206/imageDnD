@@ -30,6 +30,7 @@ e.preventDefault();
      store.put({title: text,image:file});
     await tx.done;
     // console.log(store);
+    // console.log(store);
 })();
 }
 
