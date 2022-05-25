@@ -1,109 +1,104 @@
-import React from 'react';
-import {useState,useEffect} from "react";
-
+import React from "react";
+import { useState, useEffect } from "react";
 
 function TestOne() {
-    const [text, settext] = useState();
+  const [text, settext] = useState('');
 
-    const [file, setfile] = useState();
+  const [file, setfile] = useState('');
 
-    let addData;
-    let db = null;
-    let objectStore = null;
-    let store;
-    let requestDB;
-    (function init(){
-         requestDB = window.indexedDB.open('imgDB');
-
-requestDB.onupgradeneeded=()=>{
-    let db = requestDB.result;
-   store =  db.createObjectStore('imageDB', {
-      autoIncrement:true});
-  }
-
-
-
-
-
-    })();
-    addData=(e)=>{
-        e.preventDefault();
-      // store.put({imageName:text, img:file})
-  let formData = {
-      text,
-      file
-  }
   
-  let transaction = db.transaction('imageDB', 'readwrite')
-  
-  transaction.oncomplete = (value)=>{
+  var db = null;
+  var objectStore = null;
+  var store;
+  var requestDB;
+
+  console.log(text);
+  console.log(file);
+
+  (function () {
+    requestDB = window.indexedDB.open("imgDB");
+
+    requestDB.onupgradeneeded = () => {
+       db = requestDB.result;
+       console.log(db) ;
+      store = db.createObjectStore("imageDB", {
+        autoIncrement: true,
+      });
+    };
+  })();
+
+
+  const addData = (e) => {
+    
+    e.preventDefault();
+    // store.put({imageName:text, img:file})
+    let formData = {
+      title:text,
+     image: file,
+    };
+
+    alert(transaction);
+    var transaction = db.transaction("imageDB", "readwrite");
+
+    transaction.oncomplete = (value) => {
       console.log(value);
-  }
-  
-  transaction.onerror = (err)=>{
-      console.log(err)
-  }
- 
-  store  =transaction.objectStore('imageDB');
-  let request = store.add(formData);
-  
-  request.onsuccss=ele=>{
-      console.log('successfully added');
-  }
-  
-  request.onerror=ele=>{
-      console.log('got error');
-  }
-  
-  
-    }
+    };
+
+    transaction.onerror = (err) => {
+      console.log(err);
+    };
+
+    store = transaction.objectStore("imageDB");
+    let request = store.add(formData);
+
+    request.onsuccss = (ele) => {
+      console.log("successfully added");
+    };
+
+    request.onerror = (ele) => {
+      console.log("got error");
+    };
+  };
 
   return (
     <div>
-
-<div style={{margin:'25% 40%', padding:'25px'}}>
+      <div style={{ width: "150px ", height:"250px", padding: "5px" }}>
         <form>
-        <input
-        type='text'
-        value={text}
-        onChange={(e)=>settext(e.target.value)}
-        placeholder='Enter Image lable'
-        >
-        </input>
-        <h3>Drag and Drop here</h3>
-        <span 
-         style={{backgroundColor:'lightGrey', padding:'10%'}}
-        >
           <input
-          style={{backgroundColor:'lightGrey', height:'10%', width:'100%'}}
-          type='file'
-          // value={file}
-          multiple
-          onChange={(e)=>setfile(e.target.files[0])}
-          >
-          </input>
-        </span>
-        <br />
-        <br />
-        <button
-        onClick={addData}
-        >
-          add data
-        </button>
+            type="text"
+            value={text}
+            onChange={(e) => settext(e.target.value)}
+            placeholder="Enter Image lable"
+          ></input>
+         
+          <span style={{ backgroundColor: "lightGrey", padding: "2%" ,marginTop:'20px'}}>
+            <input
+              style={{
+                backgroundColor: "lightGrey",
+                height: "10%",
+                width: "100%",
+              }}
+              type="file"
+              // value={file}
+              multiple
+              onChange={(e) => setfile(e.target.value)}
+            ></input>
+          </span>
+          <br />
+          <br />
+          <button onClick={addData}>add data</button>
         </form>
-
       </div>
 
       {/* SHOW DATA DIV */}
 
       <div>
-          <img src='' alt='img' width="100" height="50" />
-
-         
+        <img src="" alt="img" width="100" height="50" />
       </div>
 
+     
     </div>
-  )
+  );
 }
 
 export default TestOne;
