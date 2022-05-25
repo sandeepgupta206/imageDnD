@@ -39,6 +39,8 @@ tx.onerror = (err)=>{
     console.log(err)
 }
 
+// 
+
 store  =tx.objectStore('imageDB');
 let request = store.add(formData);
 
