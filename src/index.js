@@ -8,6 +8,7 @@ import TestTwo from './TestTwo';
 import TestThree from './TestThree';
 import TestFour from './TestFour';
 import TestFive from './TestFive';
+import TestSix from './TestSix';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,7 +17,8 @@ root.render(
     {/* <TestTwo /> */}
     {/* <TestThree /> */}
     {/* <TestThree /> */}
-    <TestFive />
+    {/* <TestFive /> */}
+    <TestSix />
     {/* <App /> */}
   </React.StrictMode>
 );

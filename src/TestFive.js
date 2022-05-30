@@ -4,69 +4,82 @@ import { openDB } from "idb";
 function TestFive() {
   const [text, settext] = useState("");
   const [file, setfile] = useState("");
-  let [db,setdb] = useState(null)
+  const [arr,setarr] = useState([])
+  const [imgArr,setImgArr] = useState([])
+  const [i,seti] = useState([])
+  let db;
+  const request = indexedDB.open("imgDnD");
 
-
-
-  useEffect(() => {
-    createStore();
-    viewData();
-  },[file]);
-
-  
-
-  function addData(e) {
-    e.preventDefault();
-
-    const inputData = {
-      imageTitle: text,
-      image: file,
-    };
-
-    console.log(text);
+  request.onsuccess = function(){
+    db = request.result;
     console.log(db);
-    console.log(file);
-    let txt = db.transaction("images", "readwrite");
-    const imageStore = txt.objectStore("images");
-    imageStore.put(inputData);
   }
 
-  const viewData = ()=>{
-    //   const trans = db.transaction("images", "readwrite");
-    //   const iStore = trans.objectStore('images');
-    // const request =   iStore.openCursor();
-    // request.onsuccess = e =>{
-    //     const cursor = e.target.result
-    //     console.log(cursor);
-    // }
-
-    // db.transaction('images').objectStore('images').getAll().onsuccess=e=>{
-    //     console.log(e.target.result);
-    // }
-
-
-
+  request.onupgradeneeded =(e)=>{
+    let db = e.target.result;
+    let dbStore = db.createObjectStore('book',{
+      autoIncrement:true, keyPath:'id'
+    })
   }
 
-  const createStore = () => {
-    const request = indexedDB.open("imgDnD");
+  const addData=(e)=>{
+e.preventDefault();
+let data={
+  imagesName:text,
+  imageFile:file
+}
+console.log(db)
+let transaction = db.transaction(['book'],'readwrite');
+console.log(transaction)
 
-    request.onupgradeneeded = (e) => {
-      db = e.target.result;
-      setdb(db)
-      db.createObjectStore("images", {
-        autoIncrement: true,
-      });
-console.log(db);
+let dbStore = transaction.objectStore('book');
 
-    };
-    request.onsuccess = (e) => {
-      // alert ('success Called')
-    };
+console.log(dbStore)
+dbStore.add(data);
+// request.onsuccess=()=>{
+//  dbStore.add(data);
+// }
+  }
 
-  };
+const showData=()=>{
+  // db.transaction("book").objectStore("book").getAll().onsuccess = event => {
+  //   console.log(JSON.stringify(event.target.result));
+  //   setarr(JSON.stringify(event.target.result))
+  // }
+
+let req = db.transaction('book','readonly')
+.objectStore('book')
+.openCursor();
+
+req.onsuccess=()=>{
+  console.log(req.result)
+  const cursor = req.result;
+if(cursor){
+  let imgValue = req.result.value.imageFile[0].name;
+  seti(req.result.value.files.name)
+  setImgArr([...imgArr,imgValue]);
+ console.log(req.result.value.imageFile[0].name);
+ alert(imgValue);
+}
+else{
+  console.log('no more entries')
+}
+
+}
+
+
 
   
+}
+
+
+console.log(imgArr)
+console.log(i);
+console.log(imgArr[0])
+
+
+
+
 
   return (
     <>
@@ -125,6 +138,7 @@ console.log(db);
             <button style={{ marginTop: "15px" }} onClick={addData}>
               add data
             </button>
+            <button type="button" onClick={showData}>get Data </button>
           </form>
         </div>
 
@@ -144,7 +158,14 @@ console.log(db);
             overflowY: "auto",
           }}
         >
-          <img src="" alt="img" width="100" height="50" />
+        
+
+            {/* <img src={window.URL.createObjectURL(i[0])} alt="img" width="100" height="50" /> */}
+         
+      
+
+         
+        
         </div>
       </div>
     </>
