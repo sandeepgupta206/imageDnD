@@ -4,84 +4,107 @@ import { openDB } from "idb";
 function TestSix() {
   const [text, settext] = useState("");
   const [file, setfile] = useState("");
-  const [arr,setarr] = useState([])
+  const [arr, setarr] = useState([]);
+  // const [image, setimage] = useState();
   let db;
+
   const request = indexedDB.open("imgDnD");
-
-  request.onsuccess = function(){
+  request.onsuccess = function () {
     db = request.result;
-    console.log(db);
-  }
+    // console.log(db);
+  };
 
-  request.onupgradeneeded =(e)=>{
+  request.onupgradeneeded = (e) => {
     let db = e.target.result;
-    let dbStore = db.createObjectStore('book',{
-      autoIncrement:true
-    })
-  }
+    let dbStore = db.createObjectStore("book", {
+      keyPath: 'imageFile',
+    });
+  };
 
-  const addData=(e)=>{
-e.preventDefault();
-let data={
-//   imagesName:text,
-  imageFile:file
+  const addData = (e) => {
+    e.preventDefault();
+    let data = {
+      imagesName: text,
+      imageFile: file,
+    };
+    let transaction = db.transaction(["book"], "readwrite");
+
+    let dbStore = transaction.objectStore("book");
+
+    console.log(dbStore);
+    dbStore.add(data);
+  };
+
+  console.log(arr);
+
+  // console.log(imgArr)
+  // console.log(i);
+  // console.log(imgArr[0])
+
+  const showData = (e) => {
+    e.preventDefault()
+    console.log(db);
+    const request = db.transaction("book").objectStore("book").getAll();
+
+    request.onsuccess = () => {
+      const book = request.result;
+
+      console.log(book);
+      console.table(book);
+      setarr(book);
+    };
+
+    request.onerror = (err) => {
+      console.error(`Error to get all students: ${err}`);
+    };
+  };
+
+
+  
+
+const DeleteAll =(e)=>{
+  e.preventDefault()
+  console.log(db);
+  const request = db.transaction('book', 'readwrite')
+                      .objectStore('book')
+                      .clear();
+
+                      request.onsuccess = ()=> {
+                        console.log(`Object Store "${'book'}" emptied`);
+                    }
+                    request.onerror = (err)=> {
+                      console.error(`Error to empty Object Store: ${'book'}`)
+                  }
 }
-console.log(db)
-let transaction = db.transaction(['book'],'readwrite');
-console.log(transaction)
 
-let dbStore = transaction.objectStore('book');
 
-console.log(dbStore)
-dbStore.add(data);
-// request.onsuccess=()=>{
-//  dbStore.add(data);
+
+const deleteData=(imageFile)=>{
+  console.log(db);
+  // const request = db.transaction('book','readwrite')
+  // .objectStore('book')
+  // .delete(imageFile);
+ }
+
+
+
+// const fileChange =(e)=>{
+//   const [file] = e.target.files;
+//   setimage(URL.createObjectURL(file));
 // }
-  }
 
-console.log(arr);
-
-// console.log(imgArr)
-// console.log(i);
-// console.log(imgArr[0])
-
-
-
-const showData=()=>{
-    // db.transaction("book").objectStore("book").getAll().onsuccess = event => {
-    //   console.log(JSON.stringify(event.target.result));
-    //   setarr(JSON.stringify(event.target.result))
-    //   setarr(JSON.stringify(event.target.result))
-    
-    // }
-    const request = db.transaction('book')
-    .objectStore('book')
-    .getAll();
-  
-  request.onsuccess = ()=> {
-  const book = request.result;
-  
-  console.log('Got all the students');
-  console.log(book);
-  console.table(book);
-  setarr(book);
-  }
-  
-  request.onerror = (err)=> {
-      console.error(`Error to get all students: ${err}`)
-  }
-
-
-  }
-
+const setImageOnChange=(e)=>{
+  const [file] = e.target.files;
+  setfile(URL.createObjectURL(file));
+}
 
   return (
     <>
       <div>
         <div
           style={{
-            width: "150px ",
-            height: "250px",
+            width: "200px ",
+            height: "280px",
             padding: "5px",
             margin: "15px",
           }}
@@ -89,24 +112,24 @@ const showData=()=>{
           <form
             style={{
               width: "100%",
-              height: "160px",
+              height: "200px",
               borderRadius: "5px",
               border: "2px dashed",
               color: "red",
-              fontSize: "0.9rem",
-              fontWeight: "500",
+              // fontSize: "0.9rem",
+              // fontWeight: "500",
               display: "flex",
               justifyContent: "center",
               alignItem: "center",
               flexDirection: "column",
             }}
           >
-            {/* <input
+            <input
               type="text"
               value={text}
               onChange={(e) => settext(e.target.value)}
               placeholder="Enter Image lable"
-            ></input> */}
+            ></input>
 
             <span
               style={{
@@ -118,22 +141,30 @@ const showData=()=>{
               <input
                 style={{
                   backgroundColor: "lightGrey",
-                  height: "60px",
+                  height: "40px",
                   width: "100%",
+                  marginTop: "2px",
                 }}
                 type="file"
                 accept="image/*"
-                // value={file}
                 multiple
-                onChange={(e) => setfile(URL.createObjectURL(e.target.files[0]))}
+                onChange={setImageOnChange}
               ></input>
+
+
+
+
             </span>
             <br />
             <br />
             <button style={{ marginTop: "15px" }} onClick={addData}>
-              add data
+              Add data
             </button>
-            <button type="button" onClick={showData}>get Data </button>
+            <button type="button" onClick={showData}>
+              Show Data{" "}
+            </button>
+
+            <button onClick={DeleteAll}>Clear All Data</button>
           </form>
         </div>
 
@@ -153,17 +184,22 @@ const showData=()=>{
             overflowY: "auto",
           }}
         >
+          <ul>{
+            arr.map((ele,i)=>{
+              return(
+                <>
+                <div key={i}>
 
-
-
-            {/* <img src={URL.createObjectURL(arr[0])} alt="img" width="100" height="50" /> */}
-
+                  <button type='button' onClick={deleteData(ele.imageFile)}>X</button>
+                  <span>{ele.imagesName}</span>
+                  <li ><img src={ele.imageFile} alt="img" width="100" height="50" /></li>
+                </div>
+                </>
+              )
+            })
+          }</ul>
 
          
-      
-
-         
-        
         </div>
       </div>
     </>
