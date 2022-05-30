@@ -15,9 +15,9 @@ function TestSix() {
   };
 
   request.onupgradeneeded = (e) => {
-    let db = e.target.result;
+     db = e.target.result;
     let dbStore = db.createObjectStore("book", {
-      keyPath: 'imageFile',
+      keyPath: "imageFile",
     });
   };
 
@@ -42,7 +42,7 @@ function TestSix() {
   // console.log(imgArr[0])
 
   const showData = (e) => {
-    e.preventDefault()
+    // e.preventDefault();
     console.log(db);
     const request = db.transaction("book").objectStore("book").getAll();
 
@@ -59,44 +59,52 @@ function TestSix() {
     };
   };
 
+  const DeleteAll = (e) => {
+    e.preventDefault();
+    console.log(db);
+    const request = db
+      .transaction("book", "readwrite")
+      .objectStore("book")
+      .clear();
 
-  
+    request.onsuccess = () => {
+      console.log(`Object Store "${"book"}" emptied`);
+    };
+    request.onerror = (err) => {
+      console.error(`Error to empty Object Store: ${"book"}`);
+    };
+  };
 
-const DeleteAll =(e)=>{
-  e.preventDefault()
-  console.log(db);
-  const request = db.transaction('book', 'readwrite')
-                      .objectStore('book')
-                      .clear();
+   function deleteData(e) {
+    // showData();
 
-                      request.onsuccess = ()=> {
-                        console.log(`Object Store "${'book'}" emptied`);
-                    }
-                    request.onerror = (err)=> {
-                      console.error(`Error to empty Object Store: ${'book'}`)
-                  }
+    console.log('hello');
+    console.log(e.target.value);
+    const id = e.target.value;
+    const tx = db.transaction('book','readwrite');
+    const store = tx.objectStore('book');
+    const result =  store.get(id);
+
+    if(!result){
+      console.log('id not found', id);
+    }
+
+     store.delete(id);
+    console.log('deleted data', id);
+   
+    showData();
+ 
 }
 
+  // useEffect(async()=>{
+  // // await  showData();
+  // },[arr]);
 
 
-const deleteData=(imageFile)=>{
-  console.log(db);
-  // const request = db.transaction('book','readwrite')
-  // .objectStore('book')
-  // .delete(imageFile);
- }
-
-
-
-// const fileChange =(e)=>{
-//   const [file] = e.target.files;
-//   setimage(URL.createObjectURL(file));
-// }
-
-const setImageOnChange=(e)=>{
-  const [file] = e.target.files;
-  setfile(URL.createObjectURL(file));
-}
+  const setImageOnChange = (e) => {
+    const [file] = e.target.files;
+    setfile(URL.createObjectURL(file));
+  };
 
   return (
     <>
@@ -150,10 +158,6 @@ const setImageOnChange=(e)=>{
                 multiple
                 onChange={setImageOnChange}
               ></input>
-
-
-
-
             </span>
             <br />
             <br />
@@ -184,22 +188,28 @@ const setImageOnChange=(e)=>{
             overflowY: "auto",
           }}
         >
-          <ul>{
-            arr.map((ele,i)=>{
-              return(
+          <ul>
+            {arr.map((ele, i) => {
+              return (
                 <>
-                <div key={i}>
-
-                  <button type='button' onClick={deleteData(ele.imageFile)}>X</button>
-                  <span>{ele.imagesName}</span>
-                  <li ><img src={ele.imageFile} alt="img" width="100" height="50" /></li>
-                </div>
+                  <div key={i}>
+                    <button type="button" value={ele.imageFile} onClick={deleteData}>
+                      X
+                    </button>
+                    <span>{ele.imagesName}</span>
+                    <li>
+                      <img
+                        src={ele.imageFile}
+                        alt="img"
+                        width="100"
+                        height="50"
+                      />
+                    </li>
+                  </div>
                 </>
-              )
-            })
-          }</ul>
-
-         
+              );
+            })}
+          </ul>
         </div>
       </div>
     </>
