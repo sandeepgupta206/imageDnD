@@ -51,6 +51,8 @@ const showData=()=>{
     // db.transaction("book").objectStore("book").getAll().onsuccess = event => {
     //   console.log(JSON.stringify(event.target.result));
     //   setarr(JSON.stringify(event.target.result))
+    //   setarr(JSON.stringify(event.target.result))
+    
     // }
     const request = db.transaction('book')
     .objectStore('book')
