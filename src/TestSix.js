@@ -55,7 +55,7 @@ function TestSix() {
     };
 
     request.onerror = (err) => {
-      console.error(`Error to get all students: ${err}`);
+      console.error(err);
     };
   };
 
@@ -68,15 +68,14 @@ function TestSix() {
       .clear();
 
     request.onsuccess = () => {
-      console.log(`Object Store "${"book"}" emptied`);
+      console.log(`empty`);
     };
     request.onerror = (err) => {
-      console.error(`Error to empty Object Store: ${"book"}`);
+      console.error(`error`);
     };
   };
 
    function deleteData(e) {
-    // showData();
 
     console.log('hello');
     console.log(e.target.value);
@@ -86,11 +85,11 @@ function TestSix() {
     const result =  store.get(id);
 
     if(!result){
-      console.log('id not found', id);
+      console.log('error', id);
     }
 
      store.delete(id);
-    console.log('deleted data', id);
+    console.log('deleted image having ID: ', id);
    
     showData();
  
